@@ -500,11 +500,16 @@ exports.jobList = async (req, res) => {
       .populate("Category")
       .populate("JobType");
 
+    const transformedData = jobdata.map((job) => ({
+      ...job.toObject(),
+      ComLogo: `${process.env.REACT_APP_URL}/uploads/img/${job.ComLogo}`,
+    }));
+
     res.status(200).json({
       StatusCode: 200,
       Message: "success",
-      Count: jobdata.length,
-      Values: jobdata.length <= 0 ? null : jobdata,
+      Count: transformedData.length,
+      Values: transformedData.length <= 0 ? null : transformedData,
     });
   } catch (error) {
     res.status(500).json({
@@ -560,6 +565,7 @@ exports.singleJob = async (req, res) => {
 
     const transformedData = jobdata.map((job) => ({
       ...job.toObject(),
+      ComLogo: `${process.env.REACT_APP_URL}/uploads/img/${job.ComLogo}`,
       RelatedJobs: relatedJobs.length <= 0 ? null : relatedJobs,
     }));
 
@@ -585,11 +591,16 @@ exports.featuredJob = async (req, res) => {
       .populate("Category")
       .populate("JobType");
 
+    const transformedData = jobdata.map((job) => ({
+      ...job.toObject(),
+      ComLogo: `${process.env.REACT_APP_URL}/uploads/img/${job.ComLogo}`,
+    }));
+
     res.status(200).json({
       StatusCode: 200,
       Message: "success",
-      Count: jobdata.length,
-      Values: jobdata.length <= 0 ? null : jobdata,
+      Count: transformedData.length,
+      Values: transformedData.length <= 0 ? null : transformedData,
     });
   } catch (error) {
     res.status(500).json({
@@ -611,11 +622,16 @@ exports.internJob = async (req, res) => {
       (item) => item.JobType.JobType === "Intern"
     );
 
+    const transformedData = internData.map((job) => ({
+      ...job.toObject(),
+      ComLogo: `${process.env.REACT_APP_URL}/uploads/img/${job.ComLogo}`,
+    }));
+
     res.status(200).json({
       StatusCode: 200,
       Message: "success",
-      Count: internData.length,
-      Values: internData.length <= 0 ? null : internData,
+      Count: transformedData.length,
+      Values: transformedData.length <= 0 ? null : transformedData,
     });
   } catch (error) {
     res.status(500).json({
@@ -643,11 +659,16 @@ exports.locationJob = async (req, res) => {
       .populate("Category")
       .populate("JobType");
 
+    const transformedData = jobdata.map((job) => ({
+      ...job.toObject(),
+      ComLogo: `${process.env.REACT_APP_URL}/uploads/img/${job.ComLogo}`,
+    }));
+
     res.status(200).json({
       StatusCode: 200,
       Message: "success",
-      Count: jobdata.length,
-      Values: jobdata.length <= 0 ? null : jobdata,
+      Count: transformedData.length,
+      Values: transformedData.length <= 0 ? null : transformedData,
     });
   } catch (error) {
     res.status(500).json({
@@ -675,11 +696,16 @@ exports.categoryJob = async (req, res) => {
       .populate("Category")
       .populate("JobType");
 
+    const transformedData = jobdata.map((job) => ({
+      ...job.toObject(),
+      ComLogo: `${process.env.REACT_APP_URL}/uploads/img/${job.ComLogo}`,
+    }));
+
     res.status(200).json({
       StatusCode: 200,
       Message: "success",
-      Count: jobdata.length,
-      Values: jobdata.length <= 0 ? null : jobdata,
+      Count: transformedData.length,
+      Values: transformedData.length <= 0 ? null : transformedData,
     });
   } catch (error) {
     res.status(500).json({
@@ -713,11 +739,16 @@ exports.filterJob = async (req, res) => {
       .populate("Category")
       .populate("JobType");
 
+    const transformedData = jobdata.map((job) => ({
+      ...job.toObject(),
+      ComLogo: `${process.env.REACT_APP_URL}/uploads/img/${job.ComLogo}`,
+    }));
+
     res.status(200).json({
       StatusCode: 200,
       Message: "success",
-      Count: jobdata.length,
-      Values: jobdata.length <= 0 ? null : jobdata,
+      Count: transformedData.length,
+      Values: transformedData.length <= 0 ? null : transformedData,
     });
   } catch (error) {
     res.status(500).json({

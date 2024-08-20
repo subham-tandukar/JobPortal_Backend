@@ -133,7 +133,7 @@ exports.blog = async (req, res) => {
       }
 
       let fileUrl = blog.Image;
-      const filename = file && file.filename; 
+      const filename = file && file.filename;
 
       if (file) {
         if (!file.mimetype.startsWith("image")) {
@@ -143,11 +143,7 @@ exports.blog = async (req, res) => {
             Message: "Only Images are allowed",
           });
         } else {
-          const deleteOldFile = path.join(
-            __dirname,
-            "../uploads/img",
-            fileUrl
-          );
+          const deleteOldFile = path.join(__dirname, "../uploads/img", fileUrl);
 
           // Check if the file exists before attempting to delete
           if (fs.existsSync(deleteOldFile)) {
@@ -269,10 +265,10 @@ exports.blog = async (req, res) => {
           .skip(skip)
           .limit(PageSize);
 
-          const transformedData = blogdata.map((item) => ({
-            ...item.toObject(),
-            Image: `${process.env.REACT_APP_URL}/uploads/img/${item.Image}`,
-          }));
+        const transformedData = blogdata.map((item) => ({
+          ...item.toObject(),
+          Image: `${process.env.REACT_APP_URL}/uploads/img/${item.Image}`,
+        }));
 
         const totalDocuments = await Blog.countDocuments(query);
 
@@ -301,10 +297,10 @@ exports.blog = async (req, res) => {
           .populate("Category")
           .populate("Auther");
 
-          const transformedData = showblog.map((item) => ({
-            ...item.toObject(),
-            Image: `${process.env.REACT_APP_URL}/uploads/img/${item.Image}`,
-          }));
+        const transformedData = showblog.map((item) => ({
+          ...item.toObject(),
+          Image: `${process.env.REACT_APP_URL}/uploads/img/${item.Image}`,
+        }));
 
         res.status(200).json({
           StatusCode: 200,
@@ -354,11 +350,7 @@ exports.blog = async (req, res) => {
         const fileName = deleteBlog.Image;
         if (fileName) {
           // Construct the file path to the associated PDF file
-          const filePath = path.join(
-            __dirname,
-            "../uploads/img",
-            fileName
-          );
+          const filePath = path.join(__dirname, "../uploads/img", fileName);
 
           // Check if the file exists before attempting to delete
           if (fs.existsSync(filePath)) {
@@ -455,6 +447,7 @@ exports.singleBlog = async (req, res) => {
 
     const transformedData = blogdata.map((job) => ({
       ...job.toObject(),
+      Image: `${process.env.REACT_APP_URL}/uploads/img/${job.Image}`,
       RelatedBlogs: relatedBlogs.length <= 0 ? null : relatedBlogs,
     }));
 
@@ -475,29 +468,40 @@ exports.singleBlog = async (req, res) => {
 // --- get blog ---
 exports.blogList = async (req, res) => {
   try {
-    const Category = req.query.Category;
+    let sortQuery = { createdAt: -1 };
+    let query = {};
+    query.Status = "A";
 
-    let blogData;
+    const Page = parseInt(req.body.Page) || 1;
+    const PageSize = parseInt(req.body.PageSize) || 10; // default page size is 10
+    const skip = (Page - 1) * PageSize;
 
-    // Check if Category is "-1" to retrieve all blogs
-    if (Category === "-1") {
-      blogData = await Blog.find({ Status: "A" })
-        .sort({ createdAt: -1 })
-        .populate("Category");
-    } else if (Category) {
-      // Retrieve blogs filtered by Category and populate the Category field
-      blogData = await Blog.find({ Status: "A", Category: Category })
-        .sort({ createdAt: -1 })
-        .populate("Category");
-    } else {
-      // Handle the case where no Category is provided
-    }
+    let blogdata;
+
+    blogdata = await Blog.find(query)
+      .sort(sortQuery)
+      .populate("Category")
+      .populate("Auther")
+      .skip(skip)
+      .limit(PageSize);
+
+    const transformedData = blogdata.map((item) => ({
+      ...item.toObject(),
+      Image: `${process.env.REACT_APP_URL}/uploads/img/${item.Image}`,
+    }));
+
+    const totalDocuments = await Blog.countDocuments(query);
 
     res.status(200).json({
       StatusCode: 200,
       Message: "success",
-      Count: blogData.length,
-      Values: blogData.length <= 0 ? null : blogData,
+      Pagination: {
+        Page,
+        PageSize,
+        Total: totalDocuments, // Total number of documents in the collection
+      },
+      Count: transformedData.length,
+      Values: transformedData.length <= 0 ? null : transformedData,
     });
   } catch (error) {
     res.status(500).json({
